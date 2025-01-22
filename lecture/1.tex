@@ -1,0 +1,131 @@
+The main topics of Metamathematics B are Gödel's Incompleteness Theorem and Computability Theory.
+
+\section{Gödel's Incompleteness Theorem}
+This is a theorem from 1931.
+Gödel was trying to understand Hilbert's question of whether one could formalize all of mathematics into a single set of axioms and either deduce or refute every statement using that one set of axioms.
+This was known as Hilbert's Program: the goal was to write down all the axioms of mathematics and prove that they are consistent (i.e. they do not lead to a contradiction).
+However, in 1931, Gödel proved that this was in fact impossible;
+there is no single set of axioms from which one can deduce all mathematical statements.
+
+Roughly, Gödel showed the following:
+Let ZFC denote the Zermelo-Fraenkel axioms for set theory (with the axiom of choice).
+Then, if ZFC is consistent, then there exists a statement $\varphi$ which only quantifies over $\mathbb{N}$ such that ZFC does not prove or refute $\phi$.
+In fact, one such $\varphi$ is ``ZFC consistent.'' (?)
+In other words, ZFC cannot prove its own consistency.
+
+If $T$ is computable extension of the ZFC axioms and $T$ is consistent, then $T$ does not prove $\con(T)$.
+
+Suppose $\Sigma$ is a finite set.
+$\Sigma^{< \infty}$ is the set of strings using alphabet $\Sigma$.
+A subset of $\Sigma^{< \infty}$ is said to be computable, roughly, if
+there is a computer program which, on input $s \in \Sigma^{< \infty}$, outputs $YES$ if $s \in T$ and $NO$ if $s \notin T$.
+Morally, this means that the inclusion of $s$ in $T$ is decidable by a computer program.
+
+\section{Turing Machines}
+A Turing Machine is a model of a computer.
+This model was defined to attempt to answer the questions
+\begin{enumerate}
+    \item Are there uncomputable sets?
+    \item What is the structure of those sets?
+    \item Do these uncomputable sets arise in mathematics?
+\end{enumerate}
+
+There are only countably many Fortran programs.
+How many subsets of $\Sigma^{<\infty}$ are there?
+There are uncountably many subsets of $\Sigma^{<\infty}$ (as long as $|\Sigma|< 1$).
+So there are definitely incomputable sets.
+
+
+\section{Primitive Recursive functions}
+The \textit{primitive recursive functions} is the smallest family of functions from $\mathbb{N}^k \to \mathbb{N}$ contains
+\begin{enumerate}
+    \item Constant functions
+    \item Successor function $n \mapsto n + 1$
+    \item Projections $(x_1, ..., x_k) \mapsto x_i$
+\end{enumerate}
+Furthermore, if it closed under
+\begin{enumerate}[label=\roman*]
+    \item Composition
+    \item Primitive recursion
+\end{enumerate}
+
+% TODO: turn this into a \definition
+\textbf{Composition:}
+If $f : \mathbb{N}^k \to \mathbb{N}$ and $g_1, ..., g_k$, where $g_i : \mathbb{N}^{k_i} \to \mathbb{N}$ are primitive recursive, so is $f(g_1, ..., g_k)$.
+
+\textbf{Primitive recursion:}
+If $g : \mathbb{N}^k \to \mathbb{N}$ and $f: \mathbb{N}^{k+2} \to \mathbb{N}$ are primitive recursive, then we can use $g$ as a base case and $f$ as the recursive step.
+More formally, we can construct a new function 
+$$h(y, x_1, ..., x_k) =
+\begin{dcases*}
+    g(x_1, ..., x_k) 
+    & \text{if} y = 0 \\
+    f(y, h(y-1, x_1, ..., x_k), x_1, ..., x_k) 
+    & \text{otherwise}
+\end{dcases*}
+$$
+
+We can enumerate all primitive recursive functions and then define a function $g$ such that
+\begin{align*}
+    g(0) &= f_{p_0}(0) + 1\\
+    g(1) &= f_{p_0}(1) + f_{p_1}(1) + 1 \\
+    &\vdots
+\end{align*}
+This diagonalization argument will give us a function that is not feasible to compute, but would be computable if we had all the time in the world.
+What about primitive recursive functions allows this to work?
+
+Herbrand-Gödel partial recursive functions are the smallest family of partial functions $\mathbb {N}^k \to \mathbb{N}$ containing (1), (2), and (3), and closed under (i) and (ii), and also such that (iii).
+
+(iii) Minimization: If $f : \mathbb N ^{k+1} \to \mathbb N$ is partial recursive, then so is 
+$$g(x_1, ..., x_k) = 
+\min\{y \;|\; f(y, x_1, ..., x_k) = 0\}.$$
+We call $g$ a minimization operation.
+Note that no such $y$ is guaranteed to exist.
+This could be either because there is no such $y$, or because $f$ runs forever (?)
+The fact that some of these are not guaranteed to exist also eliminates the diagonalization argument because we cannot necessarily enumerate every partial recursive function.
+
+A computable function is just a total partial computable function.
+
+\section{Clerks}
+Your clerk has access to
+\begin{itemize}
+    \item An infinite amount of paper
+    \item An infinite amount of pencils
+    \item Any other stationery items
+\end{itemize}
+The clerk can either write a symbol or erase a symbol.
+
+Their mind can only enter finitely many ``states.''
+These states determine how they are supposed to follow the rules.
+
+You have a machine that has access to an infinite $\mathbb Z$-indexed tape.
+The Turing Machine has a read head and a write head.
+It can read and write symbols from a finite alphabet $\Sigma$.
+The program formalized by this machine.
+
+The transition function $t: Q \times \Sigma \to Q \times \Sigma \times \{L, R\}$ takes in a state $q$ and the current letter $s$ and 
+$t(q, s) = (q', s', X)$, where $q'$ is the next state, $s'$ is the letter that should be written into the current cell, and $X$ determines whether to move the head of the machine either left or right.
+
+In addition to this, Turing machines have two special states: $q_{start}$ and $q_{halt} \in Q$, which are the starting and halting state.
+You can run this algorithm with any string.
+We also have a special `blank' symbol, $\sqcup$.
+
+%
+Note: Turing machines can't starve.
+
+$M$ computes the partial function $f:\Sigma^{<\infty} \to \Sigma^{<\infty}$ if when you run $M$ on a string $s$ if when $M$ halts, the output $f(s)$ is written on the tape.
+
+A function $f: \Sigma^{<\infty} \to \Sigma^{<\infty}$ is computable if it can be computed by some Turing machine $M$.
+
+Exercise: prove that the set of computable functions is the same as the primitive recursive functions.
+
+Exercise: prove that every recursive function is a computable function (or the other way around)
+
+$Succ : \{0, 1\}^{< \infty} \to  \{0, 1\}^{< \infty}$ is computable.
+
+Exercise: find the error in Marks's notes.
+
+
+
+For the next couple of weeks, we will be focusing on the basic properties of computable functions and the sets that can be computed by them.
+
