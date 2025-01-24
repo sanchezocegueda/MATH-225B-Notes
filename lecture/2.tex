@@ -1,0 +1,133 @@
+\setcounter{section}{0}
+\counterwithout{section}{chapter}
+
+Recall that a Turing machine $M$ is specified by the following parameters:
+\begin{itemize}
+    \item $Q$: a finite set of states, with two designated special states $q_{start}$ and $q_{halt}$.
+    \item $\Sigma$ a finite alphabet.
+    Usually, it includes the special `blank' symbol $\sqcup$.
+    \item $t: Q \times \Sigma \to Q \times \Sigma \times \{L, R\}$, the transition function.
+    Intuitively, $t$ decides what state to transition to next, what new symbol should go on the cell, and it also decides whether to move the head of the machine left or right.
+\end{itemize}
+
+A Turing machine $M$ computes the partial function $f : \Gamma\strings \to \Gamma\strings$ if $\Gamma \subseteq \Sigma$ and whenever $M$ is run starting with $s \in \Gamma\strings$ on the tape, tit halts with $t \in \Gamma\strings$ on the tape iff $f(s) = t$.
+
+An important characteristic of Turing machines is that if $f: \Gamma\strings \to \Gamma \strings$ is partial computable, then it is computed by a Turing machine with alphabet $\Gamma$.
+
+If we have an $f: \{0,1\}\strings \to \{0, 1\}\strings$, we can transform it to a function that works in unary.
+For instance, some $g : \{1\}\strings \to \{1\}\strings$.
+You can think of it as converting between bases.
+
+\section{Basic Properties}
+Below is a list of basic properties that Turing machines have
+\begin{enumerate}
+    \item There is a computable listing of all Turing machines $M_0, M_1, M_2, ...$ -- there are only countably many Turing Machines up to isomorphism.
+
+    This means we can make a couple of simplifying assumptions:
+    First, we can assume that whenever we have a Turing machine $M$ with $n$ states, then $Q_M = \{1, 2, ..., n\}$.
+    Similarly, if the 
+
+
+    The function $f(e) = n$ if $Q_{M_{e}} = \{1, ..., n\}$ is computable.
+    The function $g(e) = n'$ if $\Sigma_{M_{e}} = \{1, ..., n'\}$ is computable ().
+    The function $h(e, i, j) = t_{M_e}(i, j)$ is computable (transition function).
+
+    An enumeration of all the Turing machines so that all its properties can be determined in a computable way.
+    One can compute the description of the Turing machine from their index (by description we mean that states, the alphabet, and the transition function).
+    
+    \item Since we have this listing, we also have a listing of all the partial computable functions.
+    $\varphi_e$ is the $e$th partial computable function, which is defined to be the function computed by $M_e$ (should say wrt what alphabet).
+    So we can list them out as $\varphi_0, \varphi_1, \varphi_2, ...$.
+
+    \item There exists a Universal Turing Machine.
+    In other words, there is a partial computable function $\Phi:\nat \times \nat \to \nat N$ such that for any $e \in \nat$,
+    $$\varphi(e, x) = \varphi_e(x)$$
+    \textit{Proof?} We can show an algorithm.
+    From $e$, it can compute the description of some Turing machine $M_e$, and then from that description it has computed, it computes $M_e(x) = \varphi_e(x)$.
+    Note that each $\varphi_e : \nat \to \nat$.
+
+    \item The second property is the Padding Lemma.
+    The padding lemma says that for any partial computable function $\varphi : \nat \to \nat$, there are infinitely many $e \in \nat$ such that $\varphi = \varphi_e$.
+    In other words, every partial computable function appears infinitely many times in our listing of partial computable functions.
+
+    \textit{Proof?} We listed out all the Turing machines $M_0, M_1, M_2, ...$.
+    Fix some $e_0$ such that $\varphi = \varphi_{e_0}$.
+    So there is some $M_{e_0} = \varphi_{e_0} = \varphi$.
+    But there are infinitely many Turing machines such that they are equal.
+    One way we can do this is by adding more states while keeping the transition function the same.
+    You can think about this as ``padding'' your Turing machine with extra states (hence the name of the lemma).
+    Note that this is not necessarily a way to get all such functions, but it is enough to get infinitely many.
+
+    Moreover, there is a computable function $f : \nat \times \nat \to \nat$ such that $f(e, \cdot) : \nat \to \nat$ is such that $\varphi_{f(e, k)} = \varphi_e$ for all $k$.
+
+    \item The final basic property of Turing machines is the S-m-n theorem.
+    This is in the notes.
+
+    
+\end{enumerate}
+
+\section{Uncomputable Sets}
+Does there exist an algorithm to solve every mathematical problem?
+Turing showed it is theoretically impossible.
+
+Theorem: there is a total function $f : \nat \to \nat$ that is not computable.
+
+Proof? Cantor's theorem.
+Review it every night before you go to sleep.
+
+A key example of an incomputable function is
+$$f(n) = 
+\begin{dcases*}
+    \phi_n(n) + 1 
+    \text{if} \phi_n(n)\downarrow \\
+    0 
+    & \text{otherwise}
+\end{dcases*}$$
+$f$ is not computable because $f = \varphi_n$ and $f(n) = \varphi_n(n) + 1$,
+but that would mean that $f(n) = \varphi_n(n) = \varphi_n(n) + 1$, which is a contradiction.
+
+Let $H_0 = \{n \in \nat : \varphi_n(n) \downarrow\}$, and call this the halting set.
+$H_0 \subseteq \nat$.
+
+Theorem: $H_0$ is not computable.
+
+A set of numbers is computable if its characteristic function $\chi_A()$
+Assume $M_0$ computes $H_0$.
+Then to compute our previous function $f$, on input $n$, first run $M_0(n)$.
+If it outputs 0, then output 0.
+If if outputs 1, call $\varphi_n(n)$, and output whatever it outputs.
+
+Another uncomputable set is $H_1 = \{n \in \nat : \varphi_n(\varnothing)\downarrow\}$.
+Idea: reduce the computation of $H_0$ to $H_1$.
+
+\section{Rice's Theorem}
+Rice's theorem says that no properties of computable functions can be determined computably from their indices.
+
+\textbf{Definition:} Say $A \subseteq \nat$ is an \textit{index set} if for any $e \in A$, if $\varphi_e = \varphi_{e'}$, then $e' \in A$.
+There are as many index sets as there are real numbers.
+
+\textbf{Theorem (Rice):} No property of computable functions is computable.
+Every computable index set is one of the following two sets: $\varnothing$ or $\nat$.
+So any nontrivial collection of computable functions is incomputable.
+
+\textit{Proof?} Assume $A \subseteq \nat$ is a nontrivial computable index set.
+Reduce membership of $H_1$ to membership in $A$.
+Transform $n$ to $h(n)$ such that $h(n) \in A \Iff n \in H_1$.
+We will show this in full generality next time.
+
+\section{Exercises}
+
+\vspace{5mm}
+\noindent \textbf{Exercise 1:} 
+Is there an algorithm which takes a positive integer $n$ as input and outputs ``yes'' if there is a sequence of $n$ consecutive 7s in the decimal expansion of $\pi$ and ``no'' if there is not?
+
+\vspace{2mm}
+\noindent \textbf{Answer:} 
+
+
+\vspace{5mm}
+\noindent \textbf{Exercise 2:} Show that the set $\{n : \varphi_n(0)\downarrow\}$ is incomputable.
+
+
+\vspace{2mm}
+\noindent \textbf{Answer:} 
