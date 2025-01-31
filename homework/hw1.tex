@@ -55,6 +55,8 @@
 \newcommand{\solution}{\noindent \textbf{Solution.}}
 \newcommand{\lemma}{\noindent \textit{Lemma.}}
 \newcommand{\acl}{\text{acl}}
+\newcommand{\halts}{\downarrow}
+\newcommand{\nhalts}{\uparrow}
 % TODO: Add common math statements as macros
 
 
@@ -70,27 +72,126 @@
 Show that there is an algorithm for computing a function that is not primitive recursive.
 [Hint: describe an algorithm for diagonalizing against all primitive recursive functions by defining a function $g$ where $g = f_n(n) + 1$ where $f_n$ is the $n$th primitive recursive function according to some listing of all such functions.]
 
-
+\vspace{3mm}
 \solution
+
+Per the hint, suppose we have such a listing of the primitive recursive functions $f_0, f_1, f_2,$ and so on.
+This enumeration can be achieved by use of a Gödel numbering.
+
+
+We can then construct a table of these functions, where each row lists the values of $f_n$ at each natural number.
+Below is the table:
+\begin{table}[h!]
+  \begin{center}
+    \label{tab:table1}
+    \begin{tabular}{|c|c|c|c} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+    \hline
+      $f_0(0)$ & $f_0(1)$ & $f_0(2)$ & \dots \\
+      \hline
+      $f_1(0)$ & $f_1(1)$ & $f_1(2)$ & \dots\\
+      \hline
+      $f_2(0)$ & $f_2(1)$ & $f_2(2)$ & \dots \\
+      \hline
+      \vdots & \vdots & \vdots & $\ddots$
+    \end{tabular}
+  \end{center}
+\end{table}
+Then, we can look at each diagonal entry (i.e. $f_n(n)$ for each $n \in \nat$), and define a function $g$ such that $g(n) = f_n(n) + 1$.
+What this does is that it ensures that $g$ is different from every primitive recursive function at each step.
+
+But could $g$ still be primitive recursive?
+Suppose it is.
+Then $g$ must appear at some point in the enumeration.
+In other words, $g = f_{n^*}$ for some $n^* \in \nat$.
+But by construction of $g$, we have that $g(n^*) = f_{n^*}(n^*) + 1$.
+So this would mean that $f_{n^*}(n^*) = g(n^*) = f_{n^*}(n^*)+1$, a contradiction.
 
 \section*{Exercise 2}
 \begin{enumerate}
-    \item Show that if $f:\nat \to \nat$ is partial recursive, then there exists some $n$ so that $f(x_1, ..., x_n) \leq 2 \uparrow^n(\max_i(x_i)+3)$.
+    \item Show that if $f:\nat^k \to \nat$ is partial recursive, then there exists some $n$ so that $f(x_1, ..., x_k) \leq 2 \uparrow^n(\max_i(x_i)+3)$.
     \item Show that the function $2\uparrow^x x$ is not primitive recursive.
 \end{enumerate}
 
+\vspace{3mm}
 \solution
+
+\begin{enumerate}
+    \item We proceed by induction on the construction of the primitive recursive functions\footnote{I don't remember if this is the correct name for it, my apologies if I made a mistake here.}.
+
+    \textbf{Base cases:}
+
+    \begin{enumerate}
+        \item \textit{Constant functions:} Suppose $f(x) = c$ for some constant $c$.
+        Then we can easily choose $n$ such that $c \leq 2\uparrow^n 3$.
+        \item \textit{Successor function:} Suppose $f(x) = x + 1$.
+        Then we can choose $n = 1$, since $x + 1 \leq 2^{x + 3}$ for all $x$, meaning that $f(x) \leq 2 \uparrow^n (\max_i(x_i) + 3)$.
+        \item \textit{Projection functions:} Suppose $f(x_1, ..., x_k) = x_j$ for some $j \in \{1, ..., k\}$.
+        Then by the fact that $x_j \leq \max_i(x_i)$, we must have that
+        $x_j \leq \max_i(x_i) + 3 \leq 2^{\max_i(x_i) + 3} = 2\uparrow^1(\max_i(x_i) + 3)$.
+    \end{enumerate}
+    Now we can proceed with the induction.
+
+    \textbf{Induction:}
+
+    \begin{enumerate}
+        \item \textit{Composition:} Suppose $h: \nat ^k \to \nat$ is primitive recursive and $g_1, ..., g_k$ are also primitive recursive.
+        Suppose further that $h(x_1, ..., x_k) \leq 2\uparrow^{n_0}(\max_i(x_i)+ 3)$ for some $n_0 \in \nat$, and each $g_i : \nat^{k_i} \to \nat$ satisfies $g_i(x_1, ..., x_{k_i}) \leq 2\uparrow^{n_i}(\max_i(x_i) + 3)$ for some $n_i \in \nat$.
+
+        Then 
+
+        \item \textit{Primitive recursion:} Suppose 
+    \end{enumerate}
+    
+\end{enumerate}
 
 \section*{Exercise 3}
 Prove that every partial computable function from $\nat^k \to \nat$ is computable by a Turing machine.
 [Hint: show that the functions computable by a Turing machine have all the properties 1-6 in the definition of partial computable functions.]
 
+\vspace{3mm}
 \solution
+
+For this exercise, let us assume we are working with $\Sigma = \{0, 1\} \cup \{\sqcup\}$.
+
+\begin{enumerate}
+    \item It is easy to show that this Turing machine can compute the function $x \mapsto x$.
+    Consider the program with states $Q = \{q_0\}$, where $q_0$ is the initial and halting state.
+    Then, on input $x$ (in its binary representation), it will simply halt immediately.
+    Thus the string that is left on the output tape is just $x$.
+    % Let us define the transition function $t : \Sigma \times Q \to \Sigma \times Q \times \{L, R\}$ as follows:
+    % \begin{align*}
+    %     t(0, q_0) &= (0, q_1, R) \\
+    %     t(1, q_0) &= (1, q_1, R) \\
+    %     t(\sqcup, q_0) &= (\sqcup, q_1, R)
+    % \end{align*}
+    % Intuitively, this program will simply write back 
+    \item To show that the Turing machine can compute the function $x \mapsto x+1$, we can use the same program given in Example 2.5 in the notes.
+    Let $S = \{q_0, q_1, q_2\}$ and
+    \item 
+\end{enumerate}
 
 \section*{Exercise 4}
-Show that $\{n: \varphi_n(0)\}$ is incomputable.
+Show that $\{n: \varphi_n(0) \downarrow\}$ is incomputable.
 
+\vspace{3mm}
 \solution
 
+Consider the following function $g$:
+$$g(n) = \begin{cases}
+    \varphi_n(0) + 1
+    & \text{if } \varphi_n(0)\downarrow\\
+    0
+    & \text{otherwise}
+\end{cases}$$
+We claim that this function is incomputable.
+To see why, let us suppose that $g$ is computable.
+Then $g = \varphi_m$ for some $m \in \nat$.
+Now $\varphi_m$ is total, so it must be true that $g(0) = \varphi_m(0) + 1$, by definition of $g$.
+However, this would contradict the fact that $g = \varphi_m$, since we would have that $\varphi_m(0) = g(0) = \varphi_{m}(0)+1$.
+
+Now we claim that if $K_0$ were in fact computable, then we would be able to compute the function $g$ described above.
+On input $n$, first compute whether $n \in K_0$.
+If so, then $\varphi_n(0) \halts$, and thus we can use a universal Turing machine to simulate $\varphi_n$ and output $\varphi_n(0)$.
+Otherwise, we know that $\varphi_n(0) \nhalts$, and thus we can simply output 0 as $g$ would do.
 
 \end{document}
