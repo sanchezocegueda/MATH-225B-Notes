@@ -76,10 +76,9 @@ Show that there is an algorithm for computing a function that is not primitive r
 \solution
 
 Per the hint, suppose we have such a listing of the primitive recursive functions $f_0, f_1, f_2,$ and so on.
-This enumeration can be achieved by use of a Gödel numbering.
+This can probably be done in a computable manner by using a Gödel numbering, assigning unique numbers for each of the constant functions, the successor function, and the projection functions, as well as the variable symbols (and the parentheses).
 
-
-We can then construct a table of these functions, where each row lists the values of $f_n$ at each natural number.
+Once we have such an encoding, we can then construct a table of these functions, where each row lists the values of $f_n$ at each natural number.
 Below is the table:
 \begin{table}[h!]
   \begin{center}
@@ -106,9 +105,10 @@ In other words, $g = f_{n^*}$ for some $n^* \in \nat$.
 But by construction of $g$, we have that $g(n^*) = f_{n^*}(n^*) + 1$.
 So this would mean that $f_{n^*}(n^*) = g(n^*) = f_{n^*}(n^*)+1$, a contradiction.
 
+\newpage
 \section*{Exercise 2}
 \begin{enumerate}
-    \item Show that if $f:\nat^k \to \nat$ is partial recursive, then there exists some $n$ so that $f(x_1, ..., x_k) \leq 2 \uparrow^n(\max_i(x_i)+3)$.
+    \item Show that if $f:\nat^k \to \nat$ is primitive recursive, then there exists some $n$ so that $f(x_1, ..., x_k) \leq 2 \uparrow^n(\max_i(x_i)+3)$.
     \item Show that the function $2\uparrow^x x$ is not primitive recursive.
 \end{enumerate}
 
@@ -122,12 +122,14 @@ So this would mean that $f_{n^*}(n^*) = g(n^*) = f_{n^*}(n^*)+1$, a contradictio
 
     \begin{enumerate}
         \item \textit{Constant functions:} Suppose $f(x) = c$ for some constant $c$.
-        Then we can easily choose $n$ such that $c \leq 2\uparrow^n 3$.
+        Then we can easily choose $n$ such that $c \leq 2\uparrow^n 3 \leq 2\uparrow^n (x + 3)$.
+        For instance, we can choose $n = c$ (it's a bit overkill, but it will do).
         \item \textit{Successor function:} Suppose $f(x) = x + 1$.
         Then we can choose $n = 1$, since $x + 1 \leq 2^{x + 3}$ for all $x$, meaning that $f(x) \leq 2 \uparrow^n (\max_i(x_i) + 3)$.
         \item \textit{Projection functions:} Suppose $f(x_1, ..., x_k) = x_j$ for some $j \in \{1, ..., k\}$.
         Then by the fact that $x_j \leq \max_i(x_i)$, we must have that
         $x_j \leq \max_i(x_i) + 3 \leq 2^{\max_i(x_i) + 3} = 2\uparrow^1(\max_i(x_i) + 3)$.
+        We can again choose $n = 1$.
     \end{enumerate}
     Now we can proceed with the induction.
 
@@ -137,13 +139,75 @@ So this would mean that $f_{n^*}(n^*) = g(n^*) = f_{n^*}(n^*)+1$, a contradictio
         \item \textit{Composition:} Suppose $h: \nat ^k \to \nat$ is primitive recursive and $g_1, ..., g_k$ are also primitive recursive.
         Suppose further that $h(x_1, ..., x_k) \leq 2\uparrow^{n_0}(\max_i(x_i)+ 3)$ for some $n_0 \in \nat$, and each $g_i : \nat^{k_i} \to \nat$ satisfies $g_i(x_1, ..., x_{k_i}) \leq 2\uparrow^{n_i}(\max_i(x_i) + 3)$ for some $n_i \in \nat$.
 
-        Then 
+        Let $n^* = \max(n_1, ..., n_k)$.
+        Then for $i \in \{1, ..., k\}$, we have that
+        $g_i(x_1, ..., x_{k_i}) \leq 2\uparrow^{n^*}(\max_j(x_j) + 3)$.
 
-        \item \textit{Primitive recursion:} Suppose 
+        Furthermore, this means that
+        \begin{align*}
+        h(g_1, .., g_k) 
+        &\leq 2\uparrow^{n_0} (\max(g_1, ..., g)_k) + 3)\\
+        &\leq 2\uparrow^{n_0} ((2\uparrow^{n^*}(\max_j(x_j) + 3)) + 3)
+        % &\leq 2\uparrow^{n_0 + n^* + 1}(\max_j(x_j) + 3)
+        \end{align*}
+        Since $2\uparrow^{n^*}(\max_j(x_j) + 3) + 3 \leq 2\uparrow^{n^* + 1} (\max_j(x_j) + 3)$, we can then simplify this further to
+        \begin{align*}
+        h(g_1, ..., g_k) &\leq 2\uparrow^{n_0}(2\uparrow^{n^* + 1} (\max_j(x_j) + 3))\\
+            &\leq 2\uparrow^{n_0 + n^* + 1} (\max_j(x_j)+3)
+        \end{align*}
+        So we can let $n = n_0 + n^* + 1$, and we are done.
+
+        \item \textit{Primitive recursion:} Suppose $g: \nat^k \to \nat$ and $h:\nat^{k+2} \to \nat$ are primitive recursive and
+        \begin{align*}
+            g(x_1, ..., x_k) &\leq 2\uparrow^{n_g}(\max_i(x_i) + 3)\\
+            \land h(y, z, x_1, ..., x_k) &\leq 2 \uparrow^{n_h}(\max(y, z,\max_i(x_i)) + 3)
+        \end{align*}
+        Then by the definition of primitive recursion, the function 
+        $$f(y, x_1, ..., x_k) = \begin{cases}
+            g(x_1, ..., x_k)
+            & \text{if }y=0
+            \\
+            h(y-1, f(y-1,x_1,..., x_k), x_1,..., x_k)
+            & \text{if }y > 0
+        \end{cases}$$
+        must be primitive recursive too.
+        We now prove by induction on $y$ that for all $y \geq 0$,
+        $f(y, x_1, ..., x_k) \leq 2\uparrow^n (\max(y, \max_i(x_i)) + 3)$ for some $n \in \nat$.
+        
+        \textbf{Base Case:}
+        If $y = 0$, then $f(y, x_1, ..., x_k) = g(x_1, ..., x_k) \leq g(x_1, ..., x_k) \leq 2\uparrow^{n_g}(\max_i(x_i) + 3) \leq 2\uparrow^{n_g}(\max(0, \max_i(x_i)) + 3)$.
+        So the base case holds for $n = n_g$.
+
+        \textbf{Inductive Step:} Suppose $f(y, x_1, ..., x_k) \leq 2\uparrow^n (\max(y, \max_i(x_i)) + 3)$ for $y > 0$.
+        Then we have that
+        \begin{align*}
+        f(y+1, x_1, ..., x_k) &= h(y, f(y, x_1, ..., x_k), x_1, ..., x_k) \\
+            &\leq 2 \uparrow^{n_h}(\max(y, z,\max_i(x_i)) + 3) \\
+            &= 2\uparrow^{n_h} (\max(y, f(y, x_1, ..., x_k), \max_i(x_i)) + 3) \\
+            &\leq 2\uparrow^{n_h}(\max(y, {2\uparrow^n (\max(y, \max_i(x_i)) + 3)}, \max_i(x_i)) + 3)\\ 
+            &\leq 2\uparrow^{n_h}(\max(y+1, {2\uparrow^n (\max(y+1, \max_i(x_i)) + 3)}, \max_i(x_i)) + 3) \\
+            &\leq 2\uparrow^{n_h}({2\uparrow^n (\max(y+1, \max_i(x_i)) + 3)}) + 3) \\
+            &\leq 2\uparrow^{n+1}(\max(y, \max_i(x_i)) +3)
+        \end{align*}
+        So we set $n = \max(n_h, n_g) + 1$.
     \end{enumerate}
-    
+    Thus we conclude that for any primitive recursive function $f: \nat^k \to \nat$, $f(x_1, ..., x_k) \leq 2\uparrow^n(\max_i(x_i) + 3)$ for some $n \in \nat$.
+
+    \item We can use our results from the previous subpart to show this.
+    Suppose $2\uparrow^x x$ is primitive recursive for the sake of contradiction.
+    Then there should exist some $n \in \nat$ such that
+    $$2\uparrow^x x \leq 2 \uparrow^n (x + 3)$$
+    But if we pick $x = n + 1$, we find that
+    \begin{align*}
+        2\uparrow^{n+1}(n+1) 
+        &= 2\uparrow^n(2\uparrow^{n+1}n) \\
+        &> 2\uparrow^n (n + 4) \;\;\;\text{ for any sufficiently large }n
+    \end{align*}
+    This is a contradiction to the last subpart.
+    Therefore, we conclude that $2\uparrow^x x$ is \textit{not} primitive recursive, as desired.
 \end{enumerate}
 
+\newpage
 \section*{Exercise 3}
 Prove that every partial computable function from $\nat^k \to \nat$ is computable by a Turing machine.
 [Hint: show that the functions computable by a Turing machine have all the properties 1-6 in the definition of partial computable functions.]
@@ -158,18 +222,125 @@ For this exercise, let us assume we are working with $\Sigma = \{0, 1\} \cup \{\
     Consider the program with states $Q = \{q_0\}$, where $q_0$ is the initial and halting state.
     Then, on input $x$ (in its binary representation), it will simply halt immediately.
     Thus the string that is left on the output tape is just $x$.
-    % Let us define the transition function $t : \Sigma \times Q \to \Sigma \times Q \times \{L, R\}$ as follows:
-    % \begin{align*}
-    %     t(0, q_0) &= (0, q_1, R) \\
-    %     t(1, q_0) &= (1, q_1, R) \\
-    %     t(\sqcup, q_0) &= (\sqcup, q_1, R)
-    % \end{align*}
-    % Intuitively, this program will simply write back 
-    \item To show that the Turing machine can compute the function $x \mapsto x+1$, we can use the same program given in Example 2.5 in the notes.
-    Let $S = \{q_0, q_1, q_2\}$ and
-    \item 
-\end{enumerate}
+    \item To show that the Turing machine can compute the function $x \mapsto x+1$, we can a similar program to the one given in Example 2.5 in the notes.
+    Let $Q = \{q_0, q_1, q_2, q_3\}$ and define the transition function $t : \Sigma \times Q \to \Sigma \times Q \times \{L, R\}$ as
+    \begin{align*}
+        t(0, q_0) &= (0, q_0, R) \\
+        t(1, q_0) &= (1, q_0, R) \\
+        t(\sqcup, q_0) &= (\sqcup, q_1, L) \\
+        t(0, q_1) &= (1, q_2, L) \\
+        t(1, q_1) &= (0, q_1, L) \\
+        t(\sqcup, q_1) &= (1, q_2, L) \\
+        t(0, q_2) &= (0, q_2, L) \\
+        t(1, q_2) &= (1, q_2, L) \\
+        t(\sqcup, q_2) &= (\sqcup, q_3, R)
+    \end{align*}
+    Note that we are assuming that the tape head starts on the most significant bit.
+    
+    \item To show that a Turing machine can compute the projection function $f(x_1, ..., x_k) = x_i$, we can use the program specified by $Q = \{q_1, ..., q_{k+3}\}$. 
+    Note that we assume that the input is encoded as $x_1 \sqcup x_2 \sqcup ... \sqcup x_k$, and that the tape head is positioned at the most significant bit of $x_1$.
+    We designate $q_1$ as the initial state and $q_k$ as the halting state. 
+    Transition function $t: \Sigma \times Q \to \Sigma \times Q \times \{L, R\}$ that works as described below.
+    For $j < i$:
+    \begin{align*}
+        t(0, q_j) &= (\sqcup, q_j, R)\\
+        t(1, q_j) &= (\sqcup, q_j, R)\\
+        t(\sqcup, q_j) &= (\sqcup, q_{j+1}, R) \\
+    \end{align*}
+    For $i$:
+    \begin{align*}
+        t(0, q_i) &= (0, q_i, R)\\
+        t(1, q_i) &= (1, q_i, R)\\
+        t(\sqcup, q_i) &= (\sqcup, q_{i+1}, R) \\
+    \end{align*}
+    For $i < j \leq k$:
+    \begin{align*}
+        t(0, q_j) &= (\sqcup, q_j, R)\\
+        t(1, q_j) &= (\sqcup, q_j, R)\\
+        t(\sqcup, q_j) &= (\sqcup, q_{j+1}, R) \\
+    \end{align*}
+    Next, we have
+    \begin{align*}
+        t(0, q_{k+1}) &= (0, q_{k+2}, L)\\
+        t(1, q_{k+1}) &= (1, q_{k+2}, L)\\
+        t(\sqcup, q_{k+1}) &= (\sqcup, q_{k+1}, L) \\
+    \end{align*}
+    and finally, we have that
+    \begin{align*}
+        t(0, q_{k+2}) &= (0, q_{k+2}, L)\\
+        t(1, q_{k+2}) &= (1, q_{k+2}, L)\\
+        t(\sqcup, q_{k+2}) &= (\sqcup, q_{k+3}, R) \\
+    \end{align*}
+    Intuitively, this program starts at $x_1$, then sweeps to the right, deleting all entries except for $x_i$.
+    Then, it goes back and resets the tape head to point to the most significant bit of $x_i$.
+    
+    \item Assume $h: \nat^k \to \nat$ is computable and partial recursive, and that $g_1, ..., g_k$ are computable and partial recursive. 
+    Then we can show that $h(g_1, ..., g_k)$ is also computable and partial recursive.
+    Let $M_h$ denote the Turing machine that computes function $h$, and $M_{g_i}$ similarly be the Turing machines that compute $g_i$ for each $i \in \{1, ..., k\}$.
+    The idea is that we can construct a machine $M$ that computes the composition of these functions.
+    To do this, the Turing machine first simulates each $g_i$ on their input and writes the output onto the tape in a reserved region.
+    It can track which machine it is currently simulating by careful use of the states of the machine.
+    Once it is done writing the output to the tape, it then simulates $h$, using the previous output of the $g_i$ as input.
+    
+    Note that if $h$ or any of the $g_i$ are undefined, then $h(g_1, ..., g_k)$ is also undefined. 
+    This is reflected in our machine $M$.
+    Since, by assumption, each $M_{g_i}$ and $M_h$ halt if and only if their corresponding function is defined, then $M$ will also only halt if all of these machines halt.
+    Thus $M$ halts if and only if $h(g_1, ..., g_k)$ is defined.
 
+    \item Suppose $g : \nat^k \to \nat$ and $h: \nat^{k+2}\to \nat$ are partial recursive and computable by machines $M_g$ and $M_h$, respectively.
+    Then the function $f: \nat^{k+1} \to \nat$ defined by
+    $$f(y, x_1, ..., x_k) = \begin{cases}
+            g(x_1, ..., x_k)
+            & \text{if }y=0
+            \\
+            h(y-1, f(y-1,x_1,..., x_k), x_1,..., x_k)
+            & \text{if }y > 0
+        \end{cases}$$
+        is also computable and partial recursive.
+    We proceed by induction on $y$.
+
+    \textbf{Base case:}
+    If $y= 0$, then $M_f$ can simply simulate $M_g(x_1, ..., x_k)$ to get the desired behavior.
+    This works because 
+    \begin{align*}
+        f(0, x_1, ..., x_k) &= g(x_1, ..., x_k)\\
+        &= M_g(x_1, ..., x_k)
+    \end{align*}
+    So $M_f$ would correctly compute $f(y, x_1, ..., x_k)$ for $y=0$.
+    % If $y > 0$, then we can start at $y=0$, also simulating $M_g(x_1, ..., x_k)$.
+    % After that, we can use the output of $M_g(x_1, ..., x_k)$ as input to $M_h$ to compute 
+    % $$M_h(1, f(y-1, x_1, ..., x_k), x_1, ..., x_k)$$
+    
+    \textbf{Inductive step:}
+    For $y > 0$, assume inductively that $M_f$ correctly computes $f(y, x_1, ..., x_k)$.
+    Then for $y + 1$, we can simply observe that
+    \begin{align*}
+        f(y, x_1, ..., x_k) &= h(y, f(y, x_1, ..., x_k), x_1, ..., x_k) \\
+        &= h(y, M_f(y, x_1, ..., x_k), x_1, ..., x_k ) \\
+        &= M_h(y, M_f(y, x_1, ..., x_k), x_1, ..., x_k)
+    \end{align*}
+    Thus, by our inductive assumption and our other assumption that $h$ is computable by $M_h$, we find that $M_f$ also computes $f(y, x_1, ..., x_k)$ correctly for $y > 0$.
+
+    \item Suppose $f:\nat^{k+1} \to \nat$ is partial recursive and computable by a Turing machine $M_f$.
+    Then the function $g: \nat^k \to \nat$ where $g(x_1, ..., x_k)$ is equal to the least such $y$ such that $f(y, x_1, ..., x_k) = 0$ if such a $y$ exists and for all $y' < y$ we have that $f(y', x_1, ..., x_k)$ is defined.
+    Otherwise, $g(x_1, ..., x_k)$ is undefined.
+    Furthermore, $g$ is computable by a Turing machine $M_g$.
+
+    $M_g$ behaves as follows:
+    It begins with $y = 0$, and it simulates $M_f(0, x_1, ..., x_k)$.
+    If $M_f(0, x_1, ..., x_k) = 0$, then $M_g$ halts and outputs 0.
+    Otherwise, it moves on to $y=1$: $M_g$ simulates $M_f(1, x_1, ..., x_k)$.
+    Again, if $M_f(1, x_1, ..., x_k) = 0$, then $M_g$ halts and outputs $1$.
+    Otherwise, it tries again with $y =2$.
+    This procedure is repeated for each subsequent value of $y$.
+
+    If some $y$ exists such that $M_f(y, x_1, ...,x_k) = 0$, then $M_g$ will halt and output $y$, provided that for $y'< y$, $M_g(y', x_1, ..., x_k)$ halts (which happens if and only if $f(y', x_1, ..., x_k)$ is defined).
+    Otherwise, $M_g$ will run forever.
+    This is in line with the requirements of the function $g$ described above.
+\end{enumerate}
+This concludes the proof that every function $f: \nat^k \to \nat$ is computable by a Turing machine.
+
+\newpage
 \section*{Exercise 4}
 Show that $\{n: \varphi_n(0) \downarrow\}$ is incomputable.
 

@@ -1,0 +1,153 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{verbatim}
+\usepackage[left=25mm,right=25mm,top=25mm,bottom=25mm,paper=a4paper]{geometry}
+
+
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cAn}{\mathcal{A}_n}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cBn}{\mathcal{B}_n}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\UMi}{\bigcup_{i \in I}M_i}
+\newcommand{\UcMi}{\bigcup_{i \in I}\cM_i}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\rat}{\mathbb{Q}}
+\newcommand{\vphi}{\phi(v_1, v_2 ..., v_n)}
+\newcommand{\cphi}{\phi(c_1, ..., c_n)}
+\newcommand{\nmodels}{\nvDash}
+\newcommand{\blank}{\; \;}
+\newcommand{\diag}{\text{Diag}}
+\newcommand{\diagel}{\text{Diag}_\text{el}}
+\newcommand{\diagelm}{\text{Diag}_\text{el}(\cM)}
+\newcommand{\Th}{\text{Th}}
+\newcommand{\abar}{\overline{a}}
+\newcommand{\bbar}{\overline{b}}
+\newcommand{\cbar}{\overline{c}} 
+\newcommand{\dbar}{\overline{d}} 
+\newcommand{\ubar}{\overline{u}}
+\newcommand{\vbar}{\overline{v}}
+\newcommand{\wbar}{\overline{w}}
+\newcommand{\xbar}{\overline{x}}
+\newcommand{\ybar}{\overline{y}}
+\newcommand{\ff}{\leftrightarrow}
+\newcommand{\Iff}{\Leftrightarrow}
+\newcommand{\rcf}{\mathsf{RCF}}
+\newcommand{\tp}{\text{tp}}
+\newcommand{\dom}{\text{dom}}
+\newcommand{\ran}{\text{ran}}
+\newcommand{\inverse}{^{-1}}
+\newcommand\restrict[1]{\raisebox{-.5ex}{$|$}_{#1}}
+\newcommand{\solution}{\noindent \textbf{Solution.}}
+\newcommand{\lemma}{\noindent \textit{Lemma.}}
+\newcommand{\acl}{\text{acl}}
+\newcommand{\halts}{\downarrow}
+\newcommand{\nhalts}{\uparrow}
+% TODO: Add common math statements as macros
+
+
+\title{MATH 225B Homework 2}
+\author{Alejandro Sanchez Ocegueda}
+\date{February 10, 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 1}
+Is there an algorithm which takes a positive integer $n$ as input, and outputs ``yes'' if there is a sequence of $n$ consecutive 7s in the decimal expansion of $\pi$ and ``no'' if there is not?
+
+
+\vspace{3mm}
+\solution
+
+
+\newpage
+\section*{Exercise 2}
+Suppose $A$ is an infinite c.e. set. Show that there is an infinite computable subset $B \subseteq A$.
+[Hint: fix an enumeration $(A_s)_{s \in \nat}$ of $A$.
+Then let $B = \{x : \exists s\;[x \in (A_{s + 1} \setminus A) \land x = \max (A_{s+1})]\}$ be the elements enumerated into $A$ that are greater than any previous elements that have been enumerated.]
+
+
+\vspace{3mm}
+\solution
+
+
+\newpage
+\section*{Exercise 3}
+A c.e. set $A$ is computable iff it has a computable enumeration that has a computable modulus.
+
+\vspace{3mm}
+\solution
+
+
+
+\newpage
+\section*{Exercise 4}
+Suppose $A, B \subseteq \nat$ are disjoint co-c.e.
+Then show there is a computable set $C$ such that $A \subseteq C$ and $C \cap B = \varnothing$.
+
+
+\vspace{3mm}
+\solution
+
+\newpage
+\section*{Exercise 5}
+Show that $TOT \nleq_m K$, 
+so in the sense of many-to-one reducibility,
+$TOT$ is strictly more complicated than $K$.
+[Hint: Show that $\overline{K} \nleq_m TOT$.
+Then conclude that if $TOT \leq_m K$, then $\overline{K} \leq_m K$, and so $\overline{K}$ would be c.e. Contradiction!]
+
+
+\vspace{3mm}
+\solution
+
+
+\newpage
+\section*{Exercise 6}
+Let $\varphi_x\downarrow$ denote the Turing machine $x$ that halts on the empty input, and let $\langle \cdot, \cdot \rangle: \nat^2 \to \nat$ denote some computale bijection from $\nat^2 \to \nat$.
+Let $K' = \{x : \varphi_x(0)\downarrow\}$, and $K'' = \{\langle x, y \rangle : \varphi_x(y)\downarrow\}.$
+Show that $K \equiv_1 K' \equiv_1 K''$.
+
+\vspace{3mm}
+\solution
+
+
+\newpage
+\section*{Exercise 7}
+Show that there is an $e$ so that $W_e = \{e\}$.
+[Hint: Use Kleene's recursion theorem.]
+
+\vspace{3mm}
+\solution
+
+\newpage
+\section*{Exercise 8}
+Show that there is no infinite c.e. set of minimal indices.
+
+\vspace{3mm}
+\solution
+
+\newpage
+\section*{Exercise 9}
+Prove that $K$ is not an index set.
+
+\vspace{3mm}
+\solution
+
+\end{document}
